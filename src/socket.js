@@ -35,6 +35,15 @@ const initializeSocketIo = (server) => {
         socket.emit('error', 'Error deleting item');
       }
     });
+
+    socket.on('inventoryUpdate', async () => {
+      try {
+        const inventoryItems = await InventoryItem.find({});
+        io.emit('inventoryUpdate', inventoryItems);
+      } catch (error) {
+        console.error('Error sending inventory updates:', error);
+      }
+    });
   });
 
   return io;

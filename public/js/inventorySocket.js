@@ -19,6 +19,9 @@ socket.on('inventoryUpdate', data => {
     case 'delete':
       removeFromInventoryTable(data.itemId);
       break;
+    case 'bulkAdd':
+      data.items.forEach(addToInventoryTable);
+      break;
   }
 });
 
@@ -58,4 +61,3 @@ function removeFromInventoryTable(itemId) {
     rowToDelete.parentNode.removeChild(rowToDelete);
   }
 }
-

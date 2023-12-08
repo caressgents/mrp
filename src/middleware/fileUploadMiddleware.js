@@ -18,7 +18,9 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype.includes('csv') || fileExtension === '.csv') {
     cb(null, true);
   } else {
-    cb(new Error('Only .csv files are allowed!'), false);
+    const error = new Error('Only .csv files are allowed!');
+    console.error('File upload error:', error.message); // Added error logging
+    cb(error, false);
   }
 };
 

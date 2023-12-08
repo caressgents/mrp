@@ -2,6 +2,7 @@ const InventoryItem = require('../models/InventoryItem');
 const { processInventoryBatchUpload } = require('../utils/processBatchUpload');
 
 exports.addInventoryItem = async (req, res) => {
+  console.log('POST /api/inventory/:', req.body); // Added for debugging
   try {
     const { name, supplierName, cost, quantity } = req.body;
     if (!name || !supplierName || !cost) {
@@ -12,22 +13,15 @@ exports.addInventoryItem = async (req, res) => {
     }
     let inventoryItem = new InventoryItem({ name, supplierName, cost, quantity });
     await inventoryItem.save();
-    global.io.emit('inventoryUpdate', { action: 'add', item: inventoryItem });
+    global.io.emit('inventoryChange');
     res.status(201).json(inventoryItem);
   } catch (error) {
     res.status(500).json({ 
       message: 'Error adding inventory item', 
-      error: parseMongooseError(error) 
+      error: error.message 
     });
   }
 };
-
-function parseMongooseError(error) {
-  if (error.name === 'ValidationError') {
-    return Object.values(error.errors).map(e => e.message).join(', ');
-  }
-  return error.message;
-}
 
 exports.getInventoryItems = async (req, res) => {
   try {
@@ -47,7 +41,7 @@ exports.updateInventoryItem = async (req, res) => {
     if (!inventoryItem) {
       return res.status(404).json({ message: 'Inventory item not found' });
     }
-    global.io.emit('inventoryUpdate', { action: 'update', item: inventoryItem });
+    global.io.emit('inventoryChange');
     res.status(200).json(inventoryItem);
   } catch (error) {
     res.status(500).json({ message: 'Error updating inventory item', error: error.message });
@@ -61,7 +55,7 @@ exports.deleteInventoryItem = async (req, res) => {
     if (!inventoryItem) {
       return res.status(404).json({ message: 'Inventory item not found' });
     }
-    global.io.emit('inventoryUpdate', { action: 'delete', itemId: id });
+    global.io.emit('inventoryChange');
     res.status(200).json({ message: 'Inventory item deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting inventory item', error: error.message });
@@ -76,6 +70,7 @@ exports.batchUploadInventoryItems = async (req, res) => {
     const results = await processInventoryBatchUpload(req.file.path);
     res.status(201).json({ message: 'Batch inventory update successful', results });
   } catch (error) {
+    console.error(`Batch upload error: ${error.message}`); // Added error logging
     res.status(500).json({ message: 'Error processing batch upload', error: error.message });
   }
 };

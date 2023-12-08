@@ -11,12 +11,19 @@ require('dotenv').config();
 
 const app = express();
 
-// Establish connection to the database
 connectDatabase();
 
 app.use(bodyParser.json());
 app.use(compression());
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://code.jquery.com", "https://cdn.jsdelivr.net", "https://stackpath.bootstrapcdn.com"],
+      styleSrc: ["'self'", "https://stackpath.bootstrapcdn.com"]
+    }
+  }
+}));
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -27,7 +34,6 @@ app.get('/', (req, res) => {
 });
 
 const authRoutes = require('./routes/authRoutes');
-
 app.use('/api/auth', authRoutes);
 
 const inventoryRoutes = require('./routes/inventoryRoutes');
@@ -39,9 +45,10 @@ app.use('/api/workorders', workOrderRoutes);
 const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use('/', dashboardRoutes);
 
-const startCronJobs = require('./schedule/cronJobs');
+const reportRoutes = require('./routes/reportRoutes');
+app.use('/api/reports', reportRoutes);
 
-// Start the cron jobs
+const startCronJobs = require('./schedule/cronJobs');
 startCronJobs();
 
 const PORT = process.env.PORT || 3000;
