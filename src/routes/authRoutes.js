@@ -1,7 +1,7 @@
-const express = require('express');
-const { body } = require('express-validator');
-const authController = require('../controllers/authController');
-const authMiddleware = require('../middleware/authMiddleware');
+import express from 'express';
+import { body } from 'express-validator';
+import * as authController from '../controllers/authController.js';
+import * as authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -15,6 +15,6 @@ router.post('/login', [
   body('password').not().isEmpty().withMessage('Password must not be empty')
 ], authController.login);
 
-router.get('/protected', authMiddleware.verifyToken, authController.protected);
+router.get('/protected', authMiddleware.verifyToken, authController.protectedRoute);
 
-module.exports = router;
+export default router;

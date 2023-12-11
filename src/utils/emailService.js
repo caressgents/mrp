@@ -1,7 +1,7 @@
-const nodemailer = require('nodemailer');
-const { getReorderAlertEmailConfig } = require('../configuration');
+import nodemailer from 'nodemailer';
+import { getReorderAlertEmailConfig } from '../configuration.js';
 
-async function sendEmailWithAttachment(toEmail, subject, body, attachmentPath) {
+export async function sendEmailWithAttachment(toEmail, subject, body, attachmentPath) {
   const { mailConfig, fromEmail } = getReorderAlertEmailConfig();
 
   const transporter = nodemailer.createTransport(mailConfig);
@@ -22,4 +22,3 @@ async function sendEmailWithAttachment(toEmail, subject, body, attachmentPath) {
   return transporter.sendMail(mailOptions);
 }
 
-module.exports = { sendEmailWithAttachment };

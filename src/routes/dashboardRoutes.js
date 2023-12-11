@@ -1,7 +1,8 @@
-const express = require('express');
-const dashboardController = require('../controllers/dashboardController');
+import express from 'express';
+import { getInventoryDashboard } from '../controllers/dashboardController.js';
+
 const router = express.Router();
 
-router.get('/inventory-dashboard', dashboardController.getInventoryDashboard);
+router.get('/inventory-dashboard', getInventoryDashboard);
 
-module.exports = router;
+export default router;

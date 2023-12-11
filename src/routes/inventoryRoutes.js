@@ -1,22 +1,25 @@
-const express = require('express');
-const { body } = require('express-validator');
-const inventoryController = require('../controllers/inventoryController');
-const router = express.Router();
-const upload = require('../middleware/fileUploadMiddleware');
+import express from 'express';
+import { body } from 'express-validator';
+import { addInventoryItem, getInventoryItems, updateInventoryItem, deleteInventoryItem, batchUploadInventoryItems, getInventoryItemById } from '../controllers/inventoryController.js';
+import upload from '../middleware/fileUploadMiddleware.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
-router.post('/' ,
+const router = express.Router();
+
+router.post('/',
   [
     body('name').not().isEmpty().withMessage('Name must not be empty'),
     body('supplierName').not().isEmpty().withMessage('Supplier name must not be empty'),
     body('cost').isNumeric().withMessage('Cost must be a number'),
     body('quantity').optional().isInt({ min: 0 }).withMessage('Quantity must be a non-negative integer'),
   ],
-  inventoryController.addInventoryItem
+  addInventoryItem
 );
 
-router.get('/', inventoryController.getInventoryItems);
-router.put('/:id', inventoryController.updateInventoryItem);
-router.delete('/:id', inventoryController.deleteInventoryItem);
-router.post('/batch-upload', upload.single('inventoryFile'), inventoryController.batchUploadInventoryItems);
+router.get('/', getInventoryItems);
+router.get('/:id', verifyToken, getInventoryItemById);
+router.put('/:id', updateInventoryItem);
+router.delete('/:id', deleteInventoryItem);
+router.post('/batch-upload', upload.single('inventoryFile'), batchUploadInventoryItems);
 
-module.exports = router;
+export default router;

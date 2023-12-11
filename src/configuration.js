@@ -1,8 +1,8 @@
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-exports.getReorderAlertEmailConfig = () => {
+export function getReorderAlertEmailConfig() {
   return {
     mailConfig: {
       host: process.env.EMAIL_HOST,
@@ -16,4 +16,4 @@ exports.getReorderAlertEmailConfig = () => {
     fromEmail: process.env.EMAIL_FROM,
     toEmail: process.env.EMAIL_TO
   };
-};
+}

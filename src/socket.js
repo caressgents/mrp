@@ -1,7 +1,7 @@
-const { Server } = require('socket.io');
-const InventoryItem = require('./models/InventoryItem');
+import { Server } from 'socket.io';
+import InventoryItem from './models/InventoryItem.js';
 
-const initializeSocketIo = (server) => {
+export const initializeSocketIo = (server) => {
   const io = new Server(server, {
     cors: {
       origin: "*",
@@ -49,4 +49,3 @@ const initializeSocketIo = (server) => {
   return io;
 };
 
-module.exports = initializeSocketIo;

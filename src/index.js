@@ -1,18 +1,25 @@
-const express = require('express');
-const http = require('http');
-const bodyParser = require('body-parser');
-const compression = require('compression');
-const helmet = require('helmet');
-const winston = require('winston');
-const connectDatabase = require('./database');
-const path = require('path');
-
-require('dotenv').config();
-
+import express from 'express';
+import http from 'http';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import helmet from 'helmet';
+import winston from 'winston';
+import connectDatabase from './database.js';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
+import inventoryRoutes from './routes/inventoryRoutes.js';
+import workOrderRoutes from './routes/workOrderRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import productItemRoutes from './routes/productItemRoutes.js';
+import { startCronJobs } from './schedule/cronJobs.js';
+import { initializeSocketIo } from './socket.js';
+dotenv.config();
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-
 connectDatabase();
-
 app.use(bodyParser.json());
 app.use(compression());
 app.use(helmet({
@@ -24,40 +31,23 @@ app.use(helmet({
     }
   }
 }));
-
 app.use(express.static(path.join(__dirname, '..', 'public')));
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
-const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
-
-const inventoryRoutes = require('./routes/inventoryRoutes');
 app.use('/api/inventory', inventoryRoutes);
-
-const workOrderRoutes = require('./routes/workOrderRoutes');
 app.use('/api/workorders', workOrderRoutes);
-
-const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use('/', dashboardRoutes);
-
-const reportRoutes = require('./routes/reportRoutes');
 app.use('/api/reports', reportRoutes);
-
-const startCronJobs = require('./schedule/cronJobs');
+app.use('/api/productitems', productItemRoutes);
 startCronJobs();
-
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
-const io = require('./socket')(server);
+const io = initializeSocketIo(server);
 global.io = io;
-
-server.listen(PORT, () => console.log('Server running on port ' + PORT));
-
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const logger = winston.createLogger({
   // winston configuration here
 });

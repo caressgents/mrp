@@ -1,5 +1,5 @@
-const path = require('path');
+import path from 'path';
 
-exports.getInventoryDashboard = (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'public', 'inventoryDashboard.html'));
+export const getInventoryDashboard = (req, res) => {
+  res.sendFile(path.join(path.resolve(), 'public', 'inventoryDashboard.html'));
 };

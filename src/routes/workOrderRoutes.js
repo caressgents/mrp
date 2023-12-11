@@ -1,12 +1,13 @@
-const express = require('express');
-const workOrderController = require('../controllers/workOrderController');
-const authMiddleware = require('../middleware/authMiddleware');
+import express from 'express';
+import { createWorkOrder, getWorkOrders, updateWorkOrderStatus } from '../controllers/workOrderController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', authMiddleware.verifyToken, workOrderController.createWorkOrder);
-router.get('/', authMiddleware.verifyToken, workOrderController.getWorkOrders);
-router.put('/:id', authMiddleware.verifyToken, workOrderController.updateWorkOrderStatus);
-router.get('/:id/email', authMiddleware.verifyToken, workOrderController.emailWorkOrder);
+router.post('/', verifyToken, createWorkOrder);
+router.get('/', verifyToken, getWorkOrders);
+router.put('/:id', verifyToken, updateWorkOrderStatus);
 
-module.exports = router;
+// Removed the route for emailWorkOrder as the method has been removed from controller.
+
+export default router;

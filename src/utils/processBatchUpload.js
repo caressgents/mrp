@@ -1,8 +1,8 @@
-const fs = require('fs');
-const InventoryItem = require('../models/InventoryItem');
-const csvParser = require('csv-parser');
+import fs from 'fs';
+import InventoryItem from '../models/InventoryItem.js';
+import csvParser from 'csv-parser';
 
-const processInventoryBatchUpload = (filePath) => {
+export const processInventoryBatchUpload = (filePath) => {
   return new Promise((resolve, reject) => {
     const results = [];
     fs.createReadStream(filePath)
@@ -23,4 +23,3 @@ const processInventoryBatchUpload = (filePath) => {
   });
 };
 
-module.exports = { processInventoryBatchUpload };

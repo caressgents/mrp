@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const workOrderSchema = new mongoose.Schema({
   createdDate: { type: Date, default: Date.now },
@@ -9,4 +9,4 @@ const workOrderSchema = new mongoose.Schema({
   status: { type: String, enum: ['open', 'complete', 'cancelled'], default: 'open' }
 });
 
-module.exports = mongoose.model('WorkOrder', workOrderSchema);
+export default mongoose.model('WorkOrder', workOrderSchema);

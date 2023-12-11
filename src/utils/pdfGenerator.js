@@ -1,7 +1,7 @@
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
 
-function createWorkOrderPDF(workOrder, path) {
+export function createWorkOrderPDF(workOrder, path) {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument();
 
@@ -30,5 +30,3 @@ function createWorkOrderPDF(workOrder, path) {
     doc.on('error', reject);
   });
 }
-
-module.exports = { createWorkOrderPDF };

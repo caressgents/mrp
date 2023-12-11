@@ -1,8 +1,8 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
 
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -19,12 +19,12 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
- 
+
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -39,6 +39,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.protected = async (req, res) => {
+export const protectedRoute = async (req, res) => {
   res.json({ message: `Hello ${req.user.email}, you are in a protected route!` });
 };
+

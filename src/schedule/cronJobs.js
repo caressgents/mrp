@@ -1,8 +1,7 @@
-const cron = require('node-cron');
-const InventoryItem = require('../models/InventoryItem');
-const { alertInventoryReorderLevel } = require('./emailNotifier');
-
-const { getReorderAlertEmailConfig } = require('../configuration');
+import cron from 'node-cron';
+import InventoryItem from '../models/InventoryItem.js';
+import { alertInventoryReorderLevel } from './emailNotifier.js';
+import { getReorderAlertEmailConfig } from '../configuration.js';
 
 const checkAndNotifyReorder = () => {
   InventoryItem.find({ $expr: { $lte: ['$quantity', '$supplierReorderLevel'] } })
@@ -17,11 +16,10 @@ const checkAndNotifyReorder = () => {
     });
 };
 
-const startCronJobs = () => {
+export const startCronJobs = () => {
   cron.schedule('0 9 * * *', () => {
     console.log('Running a daily check for inventory reorder...');
     checkAndNotifyReorder();
   });
 };
 
-module.exports = startCronJobs;

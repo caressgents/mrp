@@ -1,10 +1,10 @@
-const express = require('express');
-const reportController = require('../controllers/reportController');
+import express from 'express';
+import { inventoryReport, downloadInventoryReportCSV } from '../controllers/reportController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/inventory', authMiddleware.verifyToken, reportController.inventoryReport);
+router.get('/inventory', verifyToken, inventoryReport);
+router.get('/inventory/csv', verifyToken, downloadInventoryReportCSV);
 
-router.get('/inventory/csv', authMiddleware.verifyToken, reportController.downloadInventoryReportCSV);
-
-module.exports = router;
+export default router;

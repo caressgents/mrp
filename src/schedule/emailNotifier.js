@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
-const alertInventoryReorderLevel = (config, items) => {
+export const alertInventoryReorderLevel = (config, items) => {
   const transporter = nodemailer.createTransport(config.mailConfig);
 
   const mailOptions = {
@@ -24,4 +24,3 @@ const generateEmailText = (items) => {
     items.map(item => ` - ${item.name}: ${item.quantity}`).join('\n');
 };
 
-module.exports = { alertInventoryReorderLevel };
